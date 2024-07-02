@@ -7,3 +7,7 @@ const app = express();
 
 // middleware
 const PORT = process.env.PORT || 3001;
+
+// routes
+app.use(express.static('public'));
+app.use(express.json());
