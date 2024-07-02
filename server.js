@@ -44,7 +44,7 @@ app.post('/api/notes', async (req, res) => {
     const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
 
     // push the new note to the notes array
-    notes[id] = {title, text, noteID}
+    notes[noteID] = {title, text, noteID}
 
     // write the new note to the db.json file
     writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
