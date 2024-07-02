@@ -28,6 +28,7 @@ app.get('/api/notes', (req, res) => {
     res.json(JSON.parse(notes));
 });
 
+// POST /api/notes should receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client
 app.post('/api/notes', async (req, res) => {
     const { title, text } = req.body;
 
@@ -50,4 +51,29 @@ app.post('/api/notes', async (req, res) => {
 
     // return the new note
     res.json({ id: noteID, title, text });
+});
+
+// DELETE /api/notes/:id should receive a query parameter containing the id of a note to delete
+app.delete('/api/notes/:id', async (req, res) => {
+    const { id } = req.params.id;
+
+    // if no id, return 400
+    if (!id) {
+        return res.status(400).json({ msg: 'Please include an id' });
+    }
+
+    // read the db.json file
+    const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
+
+    // filter out the note with the id
+    delete notes[id];
+
+    // write the new notes to the db.json file
+    writeFileSync('./db/db.json', JSON.stringify(newNotes, null, 4));
+    res.json({ msg: 'Note deleted' });
+});
+
+// listen
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });
