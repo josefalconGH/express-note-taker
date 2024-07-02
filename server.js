@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 
 // middleware
-const PORT = process.env.PORT || 3030;
+const PORT = process.env.PORT || 3050;
 
 // routes
 app.use(express.static('public'));
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'))
 });
 
-// GET /notes should return the notes.html file
+// GET /notes should return the notes.html file with the notes from the db.json file
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/notes.html'))
 });
@@ -29,6 +29,24 @@ app.get('/api/notes', (req, res) => {
         res.json(notes);
     } catch (error) {
         res.status(500).send('Error reading notes');
+    }
+});
+
+// GET request to display the note when the not is clicked
+app.get('/api/notes/:id', (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).send('Please include an id');
+    }
+
+    try {
+        const notes = JSON.parse(readFileSync('./db/db.json', 'utf8'));
+        const note = notes.find(note => note.noteID === id);
+
+        res.json(note);
+    } catch (error) {
+        res.status(500).send('Error reading note');
     }
 });
 
@@ -78,5 +96,5 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 // listen
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+    console.log(`Server listening on port http://localhost:${PORT}`);
 });
