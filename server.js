@@ -44,13 +44,13 @@ app.post('/api/notes', async (req, res) => {
     const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
 
     // push the new note to the notes array
-    notes.push({ id: noteID, title, text });
+    notes[id] = {title, text, noteID}
 
     // write the new note to the db.json file
     writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
 
     // return the new note
-    res.json({ id: noteID, title, text });
+    res.json({ title, text, noteID });
 });
 
 // DELETE /api/notes/:id should receive a query parameter containing the id of a note to delete
