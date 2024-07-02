@@ -57,7 +57,7 @@ app.post('/api/notes', async (req, res) => {
 });
 
 // DELETE /api/notes/:id should receive a query parameter containing the id of a note to delete
-aapp.delete('/api/notes/:id', async (req, res) => {
+app.delete('/api/notes/:id', async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
