@@ -27,3 +27,27 @@ app.get('/api/notes', (req, res) => {
     const notes = JSON.parse(readFileSync('./db/db.json', 'utf8'));
     res.json(JSON.parse(notes));
 });
+
+app.post('/api/notes', async (req, res) => {
+    const { title, text } = req.body;
+
+    // if no title or text, return 400
+    if (!title || !text) {
+        return res.status(400).json({ msg: 'Please include a title and text' });
+    }
+
+    // generate unique id for the note using crypto
+    const noteID = crypto.randomBytes(16).toString('hex');
+
+    // read the db.json file
+    const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
+
+    // push the new note to the notes array
+    notes.push({ id: noteID, title, text });
+
+    // write the new note to the db.json file
+    writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
+
+    // return the new note
+    res.json({ id: noteID, title, text });
+});
