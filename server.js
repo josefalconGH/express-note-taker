@@ -34,7 +34,7 @@ app.post('/api/notes', async (req, res) => {
 
     // if no title or text, return 400
     if (!title || !text) {
-        return res.status(400).json({ msg: 'Please include a title and text' });
+        return res.status(400).send('Please include a title and text');
     }
 
     // generate unique id for the note using crypto
@@ -59,7 +59,7 @@ app.delete('/api/notes/:id', async (req, res) => {
 
     // if no id, return 400
     if (!id) {
-        return res.status(400).json({ msg: 'Please include an id' });
+        return res.status(400).send('Please include an id');
     }
 
     // read the db.json file
