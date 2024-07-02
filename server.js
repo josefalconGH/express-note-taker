@@ -70,7 +70,7 @@ app.delete('/api/notes/:id', async (req, res) => {
 
     // write the new notes to the db.json file
     writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
-    res.json({ msg: 'Note deleted' });
+    res.json('Note deleted');
 });
 
 // listen
