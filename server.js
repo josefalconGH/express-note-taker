@@ -24,53 +24,56 @@ app.get('/notes', (req, res) => {
 
 // GET /api/notes should read the db.json file and return all saved notes as JSON
 app.get('/api/notes', (req, res) => {
-    const notes = JSON.parse(readFileSync('./db/db.json', 'utf8'));
-    res.json(JSON.parse(notes));
+    try {
+        const notes = JSON.parse(readFileSync('./db/db.json', 'utf8'));
+        res.json(notes);
+    } catch (error) {
+        res.status(500).send('Error reading notes');
+    }
 });
 
 // POST /api/notes should receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client
 app.post('/api/notes', async (req, res) => {
     const { title, text } = req.body;
 
-    // if no title or text, return 400
     if (!title || !text) {
         return res.status(400).send('Please include a title and text');
     }
 
-    // generate unique id for the note using crypto
     const noteID = crypto.randomBytes(16).toString('hex');
 
-    // read the db.json file
-    const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
+    try {
+        const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
 
-    // push the new note to the notes array
-    notes[noteID] = {title, text, noteID}
+        const newNote = { title, text, noteID };
+        notes.push(newNote);
 
-    // write the new note to the db.json file
-    writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
+        writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
 
-    // return the new note
-    res.json({ title, text, noteID });
+        res.json(newNote);
+    } catch (error) {
+        res.status(500).send('Error saving note');
+    }
 });
 
 // DELETE /api/notes/:id should receive a query parameter containing the id of a note to delete
-app.delete('/api/notes/:id', async (req, res) => {
-    const { id } = req.params.id;
+aapp.delete('/api/notes/:id', async (req, res) => {
+    const { id } = req.params;
 
-    // if no id, return 400
     if (!id) {
         return res.status(400).send('Please include an id');
     }
 
-    // read the db.json file
-    const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
+    try {
+        const notes = JSON.parse(readFileSync('./db/db.json', 'utf8')) || [];
 
-    // filter out the note with the id
-    delete notes[id];
+        const newNotes = notes.filter(note => note.noteID !== id);
 
-    // write the new notes to the db.json file
-    writeFileSync('./db/db.json', JSON.stringify(notes, null, 4));
-    res.json('Note deleted');
+        writeFileSync('./db/db.json', JSON.stringify(newNotes, null, 4));
+        res.json('Note deleted');
+    } catch (error) {
+        res.status(500).send('Error deleting note');
+    }
 });
 
 // listen
