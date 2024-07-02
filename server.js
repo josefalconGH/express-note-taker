@@ -13,8 +13,8 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // GET / should return the index.html file
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/index.html'));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + '/public/index.html'))
 });
 
 // GET /notes should return the notes.html file
@@ -75,5 +75,5 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 // listen
 app.listen(PORT, () => {
-    console.log(`Server listening on port https://localhost:${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
 });
